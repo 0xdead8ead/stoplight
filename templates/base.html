@@ -1,0 +1,121 @@
+{{define "base"}}
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+<head>
+
+	<!-- Basic Page Needs
+  ================================================== -->
+	<meta charset="utf-8">
+	<title>Firewall Request System</title>
+	<meta name="description" content="Firewall Request Site">
+	<meta name="author" content="Chase Schultz">
+
+	<!-- Mobile Specific Metas
+  ================================================== -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- CSS
+  ================================================== -->
+	<!-- Google Webfont for Architecture Font -->
+	<link href='http://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+
+	<!-- Animate Sytel Sheet -->
+	<link rel="stylesheet" href="static/css/animate.css">
+
+
+	<link rel="stylesheet" href="static/css/bootstrap.css">
+	<link rel="stylesheet" href="static/css/bootstrap-theme.css">
+
+	<link rel="stylesheet" href="static/css/overide.css">
+
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<!-- Favicons
+	================================================== -->
+	<link rel="shortcut icon" href="static/images/favicon.ico">
+	<link rel="apple-touch-icon" href="static/images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="static/images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="static/images/apple-touch-icon-114x114.png">
+
+</head>
+<body>
+	<!-- Header 
+	================================================== -->
+	
+	<!-- HACK REMOVE -->
+	<div class="container">
+		<div class="row">
+			<div class="col-md-9">
+				<h1 class="remove-bottom" style="margin-top: 40px">FIREWALL REQUEST</h1>
+			</div>
+			<div class="col-md-3">
+				<h4 style="margin-top: 50px" align="left">itsecurity@gap.com</h4>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2">
+				<a href="about">ABOUT</a>
+			</div>
+			<div class="col-md-2">
+				<a href="req">REQUEST</a>
+			</div>
+			<div class="col-md-2">
+				<a href="status">STATUS</a>
+			</div>
+			<div class="col-md-2">
+				<a href="approve">APPROVAL</a>
+			</div>
+			<div class="col-md-2">
+				<a href="blog">BLOG</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12" style="margin-top: -5px">
+				<hr />
+			</div>
+		</div>
+	</div>
+	<!-- Header ends here -->
+
+  {{template "content"}}
+
+  	<!-- JS
+	================================================== -->
+	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="static/js/bootstrap.js"></script>
+
+	
+	<!-- Footer 
+	================================================== -->	
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12" style="margin-top: -5px">
+				<hr />
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8" style="margin-top: -5px">
+				Designed by Chase Schultz - <a href="https://twitter.com/#!/f47h3r_B0">@F47H3R_B0</a>
+			</div>
+			<div class="col-md-4" style="margin-top: -5px">
+				<!-- CopyLeft Symbol Hack -->
+				<span style="-webkit-transform: rotate(180deg); -moz-transform: rotate(180deg); -o-transform: rotate(180deg); -khtml-transform: rotate(180deg); -ms-transform: rotate(180deg); transform: rotate(180deg); display: inline-block;">
+        			&copy;
+				</span>
+				Copyleft - All Wrongs Reserved
+				<br><br><br>
+			</div>
+		</div>
+		<br><br>
+	</div>
+	<!-- Footer ends here -->
+<!-- End Document
+================================================== -->
+</body>
+</html>
+{{end}}

@@ -1,0 +1,169 @@
+{{define "content"}}
+	<!-- Primary Page Layout
+	================================================== -->
+
+	<!-- Delete everything in this .container and get started on your own site! -->
+
+	<!-- Request Page -->
+	<script src="static/js/req.js"></script>
+	<!-- Include the method in your library. -->
+	<script src="static/js/form2js.js"></script>
+
+
+	<div class="container animated fadeIn">
+		<form class="form" role="form" name="firewall_form" style="text-align: left" id="firewall_form">
+			<div class="row">
+				<div class="col-md-7">
+					
+					<div class="form-group">
+						<table class="table table-bordered">
+							<tr>
+								<td><label class="col-sm-12 control-label" for="requestor">Requestor Name:</label></td>
+								<td><input class="form-control input-sm" id="requestor" name="requestor" type="text" value=""></td>
+							</tr>
+							<tr>
+								<td><label class="col-sm-12 control-label" for="leader">Leadership Member:</label></td>
+								<td><input class="form-control input-sm" id="leader" name="leader" type="text" value=""></td>
+							</tr>
+							<tr>
+								<td><label class="col-sm-12 control-label" for="business_approver">Business Approver:</label></td>
+								<td><input class="form-control input-sm" id="business_approver" name="business_approver" type="text" value=""></td>
+							</tr>
+							<tr>
+								<td><label class="col-sm-12 control-label" for="service_date">Service Needed Date:</label></td>
+								<td><input class="form-control input-sm" id="service_date" name="service_date" type="text" value=""></td>
+							</tr>
+							<tr>
+								<td><label class="col-sm-12 control-label" for="service_number">Service Manager #:</label></td>
+								<td><input class="form-control input-sm" id="service_number" name="service_number" type="text" value=""></td>
+							</tr>
+							<tr>
+								<td><label class="col-sm-12 control-label" for="service_term_date">Service End Date:</label></td>
+								<td><input class="form-control input-sm" id="service_term_date" name="service_term_date" type="text" value=""></td>
+							</tr>
+							<tr>
+								<td><label class="col-sm-12 control-label" for="desc_of_service">Service Description:</label></td>
+								<td><input class="form-control input-sm" id="desc_of_service" name="desc_of_service" type="text" value=""></td>
+							</tr>
+							<tr>
+								<td><label class="col-sm-12 control-label" for="business_justification">Business Justification:</label></td>
+								<td><input class="form-control input-sm" id="business_justification" name="business_justification" type="text" value=""></td>
+							</tr>
+
+
+
+						</table>
+					</div>
+
+					
+				</div>
+				<div class="col-md-5">
+					<div class="well well-lg">
+						<h4 style="margin-top: -10px"><u>Some Simple Instructions</u></h4>
+						<table>
+							<tr>
+								<td><strong>1)</strong> Fill out this form to the best of your ability.</td>
+							</tr>
+							<tr>
+								<td><strong>2)</strong> Fill out this form to the best of your ability.</td>
+							</tr>
+							<tr>
+								<td><strong>3)</strong> Fill out this form to the best of your ability.</td>
+							</tr>
+							<tr>
+								<td><strong>4)</strong> Fill out this form to the best of your ability.</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<hr />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group">
+						<table class="table" id="firewall_properties">
+							<thead>
+								<tr>
+									<th>Source Zone</th>
+									<th>Source IP(s) (CIDR)</th>
+									<th>Network Protocol</th>
+									<th>Destination Zone</th>
+									<th>Destination IP(s) (CIDR)</th>
+									<th>Destination Port(s) Range</th>
+									<th>App Name</th>
+									<th>Server Location</th>
+									<th>Data Type</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- REINSERT POINT -->
+								<tr>
+									<td>
+										<select class="form-control" id="rules[0].source_zone" name="rules[0].source_zone">
+											<option value="nonprod">Non-Prod</option>
+											<option value="prod">Prod</option>
+											<option value="pci">PCI</option>
+											<option value="dev">Dev</option>
+										</select>
+									</td>
+									<td>
+										<input class="form-control input-sm" id="rules[0].source_ips" name="rules[0].source_ips" type="text" value="">
+									</td>       
+									<td>        
+										<select class="form-control" id="rules[0].network_protocol" name="rules[0].network_protocol">
+											<option value="tcp">TCP</option>
+											<option value="udp">UDP</option>
+											<option value="tcpudp">TCP/UDP</option>
+											<option value="imcp">ICMP</option>
+										</select>       
+									</td>       
+									<td>        
+										<select class="form-control" id="rules[0].dest_zone" name="rules[0].dest_zone">
+											<option value="nonprod">Non-Prod</option>
+											<option value="prod">Prod</option>
+											<option value="pci">PCI</option>
+											<option value="dev">Dev</option>
+										</select>       
+									</td>       
+									<td>        
+										<input class="form-control input-sm" id="rules[0].dest_ips" name="rules[0].dest_ips" type="text" value="">
+									</td>       
+									<td>        
+										<input class="form-control input-sm" id="rules[0].dest_ports" name="rules[0].dest_ports" type="text" value="">
+									</td>       
+									<td>        
+										<input class="form-control input-sm" id="rules[0].app_name" name="rules[0].app_name" type="text" value="">
+									</td>
+									<td>
+										<input class="form-control input-sm" id="rules[0].server_loc" name="rules[0].server_loc" type="text" value="">
+									</td>       
+									<td>        
+										<select class="form-control" id="rules[0].data_type" name="rules[0].data_type">
+											<option value="pci">PCI Data</option>
+											<option value="nonpci">Non-PCI Data</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<button type="button" onclick="submit_request()" class="btn btn-default">Submit</button>
+									</td>
+									<td>
+										<button type="button" onclick="add_firewall_properties_form()" class="btn btn-default">Add Row</button>
+									</td>
+									<td>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</form>
+		<!-- row -->
+	</div><!-- container -->
+{{end}}

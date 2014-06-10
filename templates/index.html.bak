@@ -1,0 +1,3 @@
+<h1>TEST! - IT WORKED!</h1>
+
+<p>Yay! you did it {{printf "%s" .name}}</p>
