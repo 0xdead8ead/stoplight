@@ -1,7 +1,5 @@
-Stoplight - A firewall request processing App
-=====================================
-
-
+Stoplight - Firewall SDN written in Go
+======================================
 
 Howto run:
 ```
