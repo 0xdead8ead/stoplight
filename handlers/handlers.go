@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/f47h3r/stoplight/lib"
-	"github.com/gorilla/mux"
+	//"github.com/gorilla/mux"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -15,7 +15,7 @@ import (
 //Index handler
 func Index(w http.ResponseWriter, r *http.Request) {
 	var pass string
-	name := map[string]string{"name": params["name"]}
+	//name := map[string]string{"name": params["name"]}
 	var indexTemplate = template.Must(template.New("index").ParseFiles("templates/base.html", "templates/index.html"))
 	indexTemplate.ExecuteTemplate(w, "base", pass)
 }
