@@ -4,6 +4,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/f47h3r/stoplight/lib"
 	"github.com/gorilla/mux"
 	"html/template"
 	"io/ioutil"
@@ -42,6 +43,7 @@ func Req(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(err)
 		}
+		firewall.SaveFirewall(fwreq)
 		fmt.Fprint(w, "\n--- Request Submitted! ---\n\n%s", fwreq)
 	}
 }
