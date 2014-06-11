@@ -14,17 +14,17 @@ import (
 
 //Index handler
 func Index(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
+	var pass string
 	name := map[string]string{"name": params["name"]}
 	var indexTemplate = template.Must(template.New("index").ParseFiles("templates/base.html", "templates/index.html"))
-	indexTemplate.ExecuteTemplate(w, "base", name)
+	indexTemplate.ExecuteTemplate(w, "base", pass)
 }
 
 //About Handler
 func About(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
+	var pass string
 	var aboutTemplate = template.Must(template.New("about").ParseFiles("templates/base.html", "templates/about.html"))
-	aboutTemplate.ExecuteTemplate(w, "base", params)
+	aboutTemplate.ExecuteTemplate(w, "base", pass)
 }
 
 //Firewall Request Handler
@@ -50,23 +50,23 @@ func Req(w http.ResponseWriter, r *http.Request) {
 
 //Status Request Handler
 func Status(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
+	var pass string
 	var statusTemplate = template.Must(template.New("status").ParseFiles("templates/base.html", "templates/status.html"))
-	statusTemplate.ExecuteTemplate(w, "base", params)
+	statusTemplate.ExecuteTemplate(w, "base", pass)
 }
 
 //Approval Handler
 func Approve(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
+	var pass string
 	var approveTemplate = template.Must(template.New("approve").ParseFiles("templates/base.html", "templates/approve.html"))
-	approveTemplate.ExecuteTemplate(w, "base", params)
+	approveTemplate.ExecuteTemplate(w, "base", pass)
 }
 
 //Blog Handler
 func Blog(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
+	var pass string
 	var blogTemplate = template.Must(template.New("blog").ParseFiles("templates/base.html", "templates/blog.html"))
-	blogTemplate.ExecuteTemplate(w, "base", params)
+	blogTemplate.ExecuteTemplate(w, "base", pass)
 }
 
 func ErrorPage(w http.ResponseWriter, r *http.Request) {
