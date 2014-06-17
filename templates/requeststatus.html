@@ -1,0 +1,20 @@
+{{define "content"}}
+	<!-- Primary Page Layout
+	================================================== -->
+
+	<!-- Delete everything in this .container and get started on your own site! -->
+
+	<!-- Index Page -->
+
+	<div class="container animated fadeIn">
+		<div class="row">
+			<p>{{.requestor}}</p>
+			<pre style="white-space: pre-line;">
+				{{range $index, $element := $ }}
+				   {{$index}} {{$element}}
+				{{end}}
+			</pre>
+		</div>
+		<!-- row -->
+	</div><!-- container -->
+{{end}}

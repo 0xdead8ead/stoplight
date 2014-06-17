@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/f47h3r/stoplight/lib"
-	//"github.com/gorilla/mux"
+	"github.com/gorilla/mux"
 	"html/template"
 	"io/ioutil"
+	"labix.org/v2/mgo/bson"
 	"log"
 	"net/http"
 )
@@ -43,8 +44,8 @@ func Req(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(err)
 		}
-		firewall.SaveFirewall(fwreq)
-		fmt.Fprint(w, "\n--- Request Submitted! ---\n\n%s", fwreq)
+		fwRequestId := firewall.SaveFirewall(fwreq)
+		fmt.Fprintf(w, "\n--- Request Submitted! ---\n\nID:\t%s\n\n%s", fwRequestId, fwreq)
 	}
 }
 
@@ -52,7 +53,23 @@ func Req(w http.ResponseWriter, r *http.Request) {
 func Status(w http.ResponseWriter, r *http.Request) {
 	var pass string
 	var statusTemplate = template.Must(template.New("status").ParseFiles("templates/base.html", "templates/status.html"))
+
 	statusTemplate.ExecuteTemplate(w, "base", pass)
+}
+
+func StatusById(w http.ResponseWriter, r *http.Request) {
+	//var pass string
+	vars := mux.Vars(r)
+	var firewallStatusTemplate = template.Must(template.New("statusbyid").ParseFiles("templates/base.html", "templates/requeststatus.html"))
+	fwRequestId := vars["fwRequestId"]
+
+	firewallReq := firewall.GetFirewallStatusByID(fwRequestId)
+	firewallReqMap := firewallReq.(bson.M)
+
+	log.Println(firewallReqMap)
+
+	//fmt.Fprintf(w, "\n--- Request Retrieved! ---\n\nID:\t%s\n\n%s", firewallReqMap["_id"], firewallReq)
+	firewallStatusTemplate.ExecuteTemplate(w, "base", firewallReqMap)
 }
 
 //Approval Handler
@@ -67,6 +84,15 @@ func Blog(w http.ResponseWriter, r *http.Request) {
 	var pass string
 	var blogTemplate = template.Must(template.New("blog").ParseFiles("templates/base.html", "templates/blog.html"))
 	blogTemplate.ExecuteTemplate(w, "base", pass)
+}
+
+//Setup Handler
+func Setup(w http.ResponseWriter, r *http.Request) {
+	var pass string
+	var setupTemplate = template.Must(template.New("blog").ParseFiles("templates/base.html", "templates/setup.html"))
+	//firewall.InitializeFirewallDB()
+	setupTemplate.ExecuteTemplate(w, "base", pass)
+
 }
 
 func ErrorPage(w http.ResponseWriter, r *http.Request) {

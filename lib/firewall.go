@@ -2,8 +2,13 @@ package firewall
 
 import (
 	//"fmt"
+	//"encoding/json"
 	"labix.org/v2/mgo"
 	"log"
+	//"reflect"
+	"code.google.com/p/rsc/qr"
+	//"io/ioutil"
+	"labix.org/v2/mgo/bson"
 )
 
 type firewall_request struct {
@@ -28,8 +33,24 @@ type firewall_rule struct {
 	server_loc       string
 }
 
+type approval_queue struct {
+	queue_name        string
+	firewall_requests []string
+	//firewall_requests []firewall_request
+}
+
+func genStatusQRCode(fwidURI string) ([]byte, error) {
+	c, err := qr.Encode(fwidURI, qr.L)
+	if err != nil {
+		log.Println(err)
+	}
+	pngdat := c.PNG()
+
+	return pngdat, err
+}
+
 //Saves Firewall Request to MongoDB
-func SaveFirewall(fwreq map[string]interface{}) {
+func SaveFirewall(fwreq map[string]interface{}) string {
 	log.Println("%s", fwreq)
 	session, err := mgo.Dial("localhost")
 	if err != nil {
@@ -38,8 +59,57 @@ func SaveFirewall(fwreq map[string]interface{}) {
 	defer session.Close()
 
 	requestCollection := session.DB("firewallapp").C("fwreq")
-	err = requestCollection.Insert(fwreq)
+	//err = requestCollection.Insert(fwreq)
+	info, inserterr := requestCollection.Upsert(fwreq, fwreq)
+	if inserterr != nil {
+		panic(inserterr)
+	}
+	fwreqIDObject := info.UpsertedId.(bson.ObjectId)
+	log.Printf("%s", fwreqIDObject.Hex())
+	log.Println(fwreqIDObject)
+
+	GetFirewallStatusByID(fwreqIDObject.Hex())
+
+	return string(fwreqIDObject.Hex())
+}
+
+/*
+//Initializes Firewall Database Approval Queues
+func InitializeFirewallDB() {
+	log.Println("Initializing Firewall Approval Queues")
+
+	//TODO - Creates Approval Queues
+	session, err := mgo.Dial("localhost")
 	if err != nil {
 		panic(err)
 	}
+	defer session.Close()
+
+	//Create Approval Queues Collection
+	approvalQueueCollection := session.DB("firewallapp").C("approvalqueues")
+
+	//Create Approval Queues
+	securityApprovalQueue := approval_queue{queue_name: "SecurityApproval", firewall_requests: []string{"hello", "world"}}
+	networkingApprovalQueue := approval_queue{queue_name: "NetworkingApproval"}
+	implementationQueue := approval_queue{queue_name: "implementationQueue"}
+}
+*/
+
+// Get Firewall Status by ID
+func GetFirewallStatusByID(id string) interface{} {
+	log.Printf("Retreiving Firewall Request by ID:\t%s", id)
+	session, err := mgo.Dial("localhost")
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+	requestCollection := session.DB("firewallapp").C("fwreq")
+	var result interface{}
+	err = requestCollection.FindId(bson.ObjectIdHex(id)).One(&result)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("\n\n%s\n\n", result)
+	return result
+
 }

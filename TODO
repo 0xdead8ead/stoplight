@@ -8,6 +8,20 @@ TODO LIST
     Server Side form JSON Validation - json.Unmarshal
 
     Create Implementation Queues & References (Pending, NetValid, SecApprove, NetImplement)
+        
+        Database Collections:
+
+            approval_queues_tempate{
+                _objectid:198127398721245,
+                queue_name: firewallRequest,
+                fwrequests:[
+                    <_objectid>,
+                    <_objectid>,
+                    <_objectid>,
+                    <_objectid>,
+                ]
+            }
+
 
     Add Status Field to Request JSON Object (fwreq map)
 
@@ -32,3 +46,5 @@ TODO LIST
     Ensure all exisiting form functionality has been replicated
 
     Take this TODO list and convert it to Github Issues... :)
+
+    Add Badges - [![Go Walker](http://gowalker.org/api/v1/badge)](https://gowalker.org/github.com/Unknwon/com)
