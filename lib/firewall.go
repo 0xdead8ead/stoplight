@@ -5,10 +5,12 @@ import (
 	//"encoding/json"
 	"labix.org/v2/mgo"
 	"log"
+	"strings"
 	//"reflect"
 	"code.google.com/p/rsc/qr"
-	//"io/ioutil"
+	"io/ioutil"
 	"labix.org/v2/mgo/bson"
+	//"regexp"
 )
 
 type firewall_request struct {
@@ -39,14 +41,22 @@ type approval_queue struct {
 	//firewall_requests []firewall_request
 }
 
-func genStatusQRCode(fwidURI string) ([]byte, error) {
+func GenStatusQRCode(fwidURI string) {
+	//re := regexp.MustCompile(`(?<=\/status\/)([0-9a-f]+)`)
+	//log.Println(re.FindStringSubmatch(fwidURI))
+
+	fwUriSplit := strings.Split(fwidURI, "/")
+	fwid := fwUriSplit[2]
+	log.Println(fwUriSplit)
+	log.Println(fwid)
 	c, err := qr.Encode(fwidURI, qr.L)
 	if err != nil {
 		log.Println(err)
+	} else {
+		pngdat := c.PNG()
+		s := []string{"static/images/qrcodes/", fwid, ".png"}
+		ioutil.WriteFile(strings.Join(s, ""), pngdat, 0666)
 	}
-	pngdat := c.PNG()
-
-	return pngdat, err
 }
 
 //Saves Firewall Request to MongoDB

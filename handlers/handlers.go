@@ -60,16 +60,23 @@ func Status(w http.ResponseWriter, r *http.Request) {
 func StatusById(w http.ResponseWriter, r *http.Request) {
 	//var pass string
 	vars := mux.Vars(r)
-	var firewallStatusTemplate = template.Must(template.New("statusbyid").ParseFiles("templates/base.html", "templates/requeststatus.html"))
 	fwRequestId := vars["fwRequestId"]
 
-	firewallReq := firewall.GetFirewallStatusByID(fwRequestId)
-	firewallReqMap := firewallReq.(bson.M)
+	if bson.IsObjectIdHex(fwRequestId) {
+		firewallReq := firewall.GetFirewallStatusByID(fwRequestId)
+		firewallReqMap := firewallReq.(bson.M)
+		firewallReqMap["_id"] = firewallReqMap["_id"].(bson.ObjectId).Hex()
 
-	log.Println(firewallReqMap)
+		log.Println(firewallReqMap)
+		firewall.GenStatusQRCode(fmt.Sprintf("%s/status/%s", r.Host, fwRequestId))
 
-	//fmt.Fprintf(w, "\n--- Request Retrieved! ---\n\nID:\t%s\n\n%s", firewallReqMap["_id"], firewallReq)
-	firewallStatusTemplate.ExecuteTemplate(w, "base", firewallReqMap)
+		//fmt.Fprintf(w, "\n--- Request Retrieved! ---\n\nID:\t%s\n\n%s", firewallReqMap["_id"], firewallReq)
+		var firewallStatusTemplate = template.Must(template.New("statusbyid").ParseFiles("templates/base.html", "templates/requeststatus.html"))
+		firewallStatusTemplate.ExecuteTemplate(w, "base", firewallReqMap)
+	} else {
+		http.Redirect(w, r, "/status", 302)
+	}
+
 }
 
 //Approval Handler

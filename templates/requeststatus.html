@@ -8,12 +8,18 @@
 
 	<div class="container animated fadeIn">
 		<div class="row">
-			<p>{{.requestor}}</p>
-			<pre style="white-space: pre-line;">
-				{{range $index, $element := $ }}
-				   {{$index}} {{$element}}
-				{{end}}
-			</pre>
+			<div class="col-md-8">
+				<pre style="white-space: pre-line;">
+					{{range $index, $element := $ }}
+					   {{$index}} {{$element}}
+					{{end}}
+				</pre>	
+			</div>
+			<div class="col-md-4">
+				<img src="/static/images/qrcodes/{{._id}}.png" style="margin-top: -15px">
+			</div>
+			
+			
 		</div>
 		<!-- row -->
 	</div><!-- container -->
