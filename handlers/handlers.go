@@ -45,7 +45,11 @@ func Req(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 		}
 		fwRequestId := firewall.SaveFirewall(fwreq)
-		fmt.Fprintf(w, "\n--- Request Submitted! ---\n\nID:\t%s\n\n%s", fwRequestId, fwreq)
+		statusUrl := fmt.Sprintf("http://%s/status/%s", r.Host, fwRequestId)
+		firewall.GenStatusQRCode(statusUrl)
+
+		//Send Status URL to redirect to
+		fmt.Fprintf(w, "%s", statusUrl)
 	}
 }
 
@@ -68,9 +72,7 @@ func StatusById(w http.ResponseWriter, r *http.Request) {
 		firewallReqMap["_id"] = firewallReqMap["_id"].(bson.ObjectId).Hex()
 
 		log.Println(firewallReqMap)
-		firewall.GenStatusQRCode(fmt.Sprintf("%s/status/%s", r.Host, fwRequestId))
 
-		//fmt.Fprintf(w, "\n--- Request Retrieved! ---\n\nID:\t%s\n\n%s", firewallReqMap["_id"], firewallReq)
 		var firewallStatusTemplate = template.Must(template.New("statusbyid").ParseFiles("templates/base.html", "templates/requeststatus.html"))
 		firewallStatusTemplate.ExecuteTemplate(w, "base", firewallReqMap)
 	} else {

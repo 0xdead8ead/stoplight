@@ -44,6 +44,10 @@ function alert_callback(data){
 	alert(data);
 }
 
+function redirect_callback(data){
+	window.location.assign(data);
+}
+
 function submit_request(){
 	var jsondata = '';
 	form2json(jsondata);
@@ -65,7 +69,8 @@ function form2json (jsondata){
 
 
 	/* jsondata = JSON.stringify(firewall_form.serializeObject()); */
-	ajaxJSONPost(jsondata, alert_callback);
+	/* ajaxJSONPost(jsondata, alert_callback); */
+	ajaxJSONPost(jsondata, redirect_callback);
 }
 
 function ajaxJSONPost(jsondata, callback){

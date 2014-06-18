@@ -13,6 +13,7 @@ import (
 	//"regexp"
 )
 
+//TODO - Convert Map to Struct & Vis Versa
 type firewall_request struct {
 	requestor         string
 	service_date      string
@@ -42,11 +43,12 @@ type approval_queue struct {
 }
 
 func GenStatusQRCode(fwidURI string) {
+	// Turns Out Go doesnt support Positive Lookbehind as it is
+	//https://groups.google.com/d/msg/golang-nuts/7qgSDWPIh_E/OHTAm4wRZL0J
 	//re := regexp.MustCompile(`(?<=\/status\/)([0-9a-f]+)`)
 	//log.Println(re.FindStringSubmatch(fwidURI))
-
 	fwUriSplit := strings.Split(fwidURI, "/")
-	fwid := fwUriSplit[2]
+	fwid := fwUriSplit[4]
 	log.Println(fwUriSplit)
 	log.Println(fwid)
 	c, err := qr.Encode(fwidURI, qr.L)
@@ -62,6 +64,9 @@ func GenStatusQRCode(fwidURI string) {
 //Saves Firewall Request to MongoDB
 func SaveFirewall(fwreq map[string]interface{}) string {
 	log.Println("%s", fwreq)
+
+	// TODO - Append Status Variable to fwreq with Current Queue
+
 	session, err := mgo.Dial("localhost")
 	if err != nil {
 		panic(err)
@@ -78,32 +83,11 @@ func SaveFirewall(fwreq map[string]interface{}) string {
 	log.Printf("%s", fwreqIDObject.Hex())
 	log.Println(fwreqIDObject)
 
-	GetFirewallStatusByID(fwreqIDObject.Hex())
+	//GetFirewallStatusByID(fwreqIDObject.Hex())
+	//TODO - Add New fwreqid to queue references
 
 	return string(fwreqIDObject.Hex())
 }
-
-/*
-//Initializes Firewall Database Approval Queues
-func InitializeFirewallDB() {
-	log.Println("Initializing Firewall Approval Queues")
-
-	//TODO - Creates Approval Queues
-	session, err := mgo.Dial("localhost")
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-
-	//Create Approval Queues Collection
-	approvalQueueCollection := session.DB("firewallapp").C("approvalqueues")
-
-	//Create Approval Queues
-	securityApprovalQueue := approval_queue{queue_name: "SecurityApproval", firewall_requests: []string{"hello", "world"}}
-	networkingApprovalQueue := approval_queue{queue_name: "NetworkingApproval"}
-	implementationQueue := approval_queue{queue_name: "implementationQueue"}
-}
-*/
 
 // Get Firewall Status by ID
 func GetFirewallStatusByID(id string) interface{} {
