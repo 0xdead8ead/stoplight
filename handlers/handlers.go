@@ -13,6 +13,11 @@ import (
 	"net/http"
 )
 
+type status_page struct {
+	Id           string
+	FirewallJSON string
+}
+
 //Index handler
 func Index(w http.ResponseWriter, r *http.Request) {
 	var pass string
@@ -44,6 +49,8 @@ func Req(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(err)
 		}
+		//TODO - Append status variable to fwreq
+		fwreq["status"] = "networkPending"
 		fwRequestId := firewall.SaveFirewall(fwreq)
 		statusUrl := fmt.Sprintf("http://%s/status/%s", r.Host, fwRequestId)
 		firewall.GenStatusQRCode(statusUrl)
@@ -73,8 +80,21 @@ func StatusById(w http.ResponseWriter, r *http.Request) {
 
 		log.Println(firewallReqMap)
 
+		//TODO - Serialize to JSON
+		jsonFirewallReqMap, err := json.MarshalIndent(firewallReqMap, "", "    ")
+		if err != nil {
+			log.Println(err)
+		}
+		jsonStringFwReq := string(jsonFirewallReqMap)
+		log.Println(jsonStringFwReq)
+
+		statusObject := status_page{Id: firewallReqMap["_id"].(string), FirewallJSON: jsonStringFwReq}
+
 		var firewallStatusTemplate = template.Must(template.New("statusbyid").ParseFiles("templates/base.html", "templates/requeststatus.html"))
-		firewallStatusTemplate.ExecuteTemplate(w, "base", firewallReqMap)
+		err = firewallStatusTemplate.ExecuteTemplate(w, "base", statusObject)
+		if err != nil {
+			log.Println(err)
+		}
 	} else {
 		http.Redirect(w, r, "/status", 302)
 	}
