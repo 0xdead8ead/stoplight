@@ -75,20 +75,14 @@ func StatusById(w http.ResponseWriter, r *http.Request) {
 
 	if bson.IsObjectIdHex(fwRequestId) {
 		firewallReq := firewall.GetFirewallStatusByID(fwRequestId)
-		firewallReqMap := firewallReq.(bson.M)
-		firewallReqMap["_id"] = firewallReqMap["_id"].(bson.ObjectId).Hex()
-
-		log.Println(firewallReqMap)
-
-		//TODO - Serialize to JSON
-		jsonFirewallReqMap, err := json.MarshalIndent(firewallReqMap, "", "    ")
+		//Serialize to JSON
+		jsonFirewallReq, err := json.MarshalIndent(firewallReq, "", "    ")
 		if err != nil {
 			log.Println(err)
 		}
-		jsonStringFwReq := string(jsonFirewallReqMap)
-		log.Println(jsonStringFwReq)
+		log.Println(string(jsonFirewallReq))
 
-		statusObject := status_page{Id: firewallReqMap["_id"].(string), FirewallJSON: jsonStringFwReq}
+		statusObject := status_page{Id: firewallReq.Id, FirewallJSON: string(jsonFirewallReq)}
 
 		var firewallStatusTemplate = template.Must(template.New("statusbyid").ParseFiles("templates/base.html", "templates/requeststatus.html"))
 		err = firewallStatusTemplate.ExecuteTemplate(w, "base", statusObject)
@@ -103,9 +97,24 @@ func StatusById(w http.ResponseWriter, r *http.Request) {
 
 //Approval Handler
 func Approve(w http.ResponseWriter, r *http.Request) {
-	var pass string
+	//var pass string
+
+	//TODO - Call Firewall Search for Matching Queues
+	netPendingQueue := firewall.GetFirewallRequestByQueue("networkPending")
+	//log.Println(requests)
+	//for request := range requests {
+	//	requestMap := request.(bson.M)
+	//	requestMap["_id"] = requestMap["_id"].(bson.ObjectId).Hex()
+	//}
+	//fwreqJson := firewall.FirewallStructToJson(netPendingQueue.Firewall_Requests[0])
+	fwreqJson := netPendingQueue.Firewall_Queue.ToJson()
+	//log.Printf("Firewall Req JSON:\n\n%s", fwreqJson)
+	log.Printf("Firewall ToJson:\n\n%s", fwreqJson)
+
 	var approveTemplate = template.Must(template.New("approve").ParseFiles("templates/base.html", "templates/approve.html"))
-	approveTemplate.ExecuteTemplate(w, "base", pass)
+
+	//approveTemplate = approveTemplate.Funcs(functionMap)
+	approveTemplate.ExecuteTemplate(w, "base", netPendingQueue)
 }
 
 //Blog Handler
