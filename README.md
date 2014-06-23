@@ -16,7 +16,12 @@ git clone git@github.gapinc.dev:security-engineering/stoplight.git
 
 -------
 
-Howto run:
+Fire up Mongo:
+```
+mongod --config /usr/local/etc/mongod.conf
+```
+
+Run the Go App!:
 ```
 go run app.go
 ```
@@ -26,5 +31,5 @@ You can also build a binary:
 go build app.go
 ```
 
-Test App: [http://localhost:3000/](http://localhost:3000/)
+Onece you fire up the App - It can be Viewed in your local Browser: [http://localhost:3000/](http://localhost:3000/)
 
