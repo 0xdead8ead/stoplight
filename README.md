@@ -5,7 +5,7 @@ Stoplight - Firewall Workflow in Go
 
 Dependencies:
 ```
-brew install mongo
+brew install mongodb
 brew install go
 ```
 
