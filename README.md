@@ -1,6 +1,8 @@
 Stoplight - Firewall Workflow in Go
 ======================================
 
+![Alt text](http://github.gapinc.dev/security-engineering/stoplight/raw/master/firewall_req.png "Re-imagined Firewall Request App")
+
 Dependencies:
 ```
 brew install mongo
