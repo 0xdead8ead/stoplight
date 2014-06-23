@@ -24,6 +24,10 @@ type approve_page struct {
 	ImplementationQueue   *firewall.Approval_Queue
 }
 
+type audit_page struct {
+	AuditLog *firewall.Approval_Queue
+}
+
 //Index handler
 func Index(w http.ResponseWriter, r *http.Request) {
 	var pass string
@@ -132,13 +136,28 @@ func ApproveRequest(w http.ResponseWriter, r *http.Request) {
 	if bson.IsObjectIdHex(fwRequestId) {
 		firewall.UpdateFirewallStatus(fwRequestId, queueApprovedTo)
 	}
+	http.Redirect(w, r, "/approve", 302)
 }
 
-//Blog Handler
-func Blog(w http.ResponseWriter, r *http.Request) {
-	var pass string
-	var blogTemplate = template.Must(template.New("blog").ParseFiles("templates/base.html", "templates/blog.html"))
-	blogTemplate.ExecuteTemplate(w, "base", pass)
+//Approval Handler
+func Audit(w http.ResponseWriter, r *http.Request) {
+	//var pass string
+
+	auditQueue := new(audit_page)
+
+	//TODO - Call Firewall Search for Matching Queues
+	auditQueue.AuditLog = firewall.GetFirewallRequestByQueue("implementationCompleted")
+
+	//netPendingQueue := approvalQueues.NeworkValidationQueue
+
+	//fwreqJson := netPendingQueue.Firewall_Queue.ToJson()
+	//log.Printf("Firewall Req JSON:\n\n%s", fwreqJson)
+	//log.Printf("Firewall ToJson:\n\n%s", fwreqJson)
+
+	var auditTemplate = template.Must(template.New("approve").ParseFiles("templates/base.html", "templates/audit.html"))
+
+	//approveTemplate = approveTemplate.Funcs(functionMap)
+	auditTemplate.ExecuteTemplate(w, "base", auditQueue)
 }
 
 //Setup Handler

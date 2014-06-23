@@ -1,0 +1,146 @@
+{{define "content"}}
+	<!-- Primary Page Layout
+	================================================== -->
+
+	<!-- Delete everything in this .container and get started on your own site! -->
+
+	<!-- Index Page -->
+
+	<div class="container animated fadeIn">
+		<div class="row" style="border-radius:23px;border-style:solid;border-color:#E7E0E0">
+			<div class="col-md-12">
+				<h3>Completed Firewall Requests</h3>
+				<div class="panel-group" id="accordion">
+				  
+				{{range $i, $fwreq := .AuditLog.Firewall_Queue}}
+
+				  <div class="panel panel-default">
+				    <div class="panel-heading">
+				      <h4 class="panel-title">
+				        <a data-toggle="collapse" data-parent="#accordion" href="#collapseNetworkingValidation{{$i}}">
+				          Firewall Request - {{$fwreq.Id}} <span class="label label-info" style="float: right">Implemented</span>
+				        </a>
+				      </h4>
+				    </div>
+				    <div id="collapseNetworkingValidation{{$i}}" class="panel-collapse collapse">
+				      <div class="panel-body">
+				      	<!--<iframe src="/status/{{$fwreq.Id}}"></iframe> -->
+				      	<div class="container animated fadeIn" style="margin-left: -25px">
+				      		<div class="row">
+				      			<div class="col-md-7">
+				      				<div class="well well-lg" style="margin-top: 18px">
+				      					<h4 style="margin-top: -10px"><u>Request Metadata</u></h4>
+				      					<div class="container">
+				      						<div class="row">
+				      							<div class="col-md-2">
+				      								<strong>Id:</strong>
+				      							</div>
+				      							<div class="col-md-2">
+				      								{{$fwreq.Id}}
+				      							</div>
+				      						</div>
+				      						<div class="row">
+				      							<div class="col-md-2">
+				      								<strong>Requestor:</strong>
+				      							</div>
+				      							<div class="col-md-2">
+				      								{{$fwreq.Requestor}}
+				      							</div>
+				      						</div>
+				      						<div class="row">
+				      							<div class="col-md-2">
+				      								<strong>Leader:</strong>
+				      							</div>
+				      							<div class="col-md-2">
+				      								{{$fwreq.Leader}}
+				      							</div>
+				      						</div>
+				      						<div class="row">
+				      							<div class="col-md-2">
+				      								<strong>Business Approver:</strong>
+				      							</div>
+				      							<div class="col-md-2">
+				      								{{$fwreq.Business_Approver}}
+				      							</div>
+				      						</div>
+				      						<div class="row">
+				      							<div class="col-md-2">
+				      								<strong>Service Date:</strong>
+				      							</div>
+				      							<div class="col-md-2">
+				      								{{$fwreq.Service_Date}}
+				      							</div>
+				      						</div>
+				      						<div class="row">
+				      							<div class="col-md-2">
+				      								<strong>Service Term Date:</strong>
+				      							</div>
+				      							<div class="col-md-2">
+				      								{{$fwreq.Service_Term_Date}}
+				      							</div>
+				      						</div>
+				      						<div class="row">
+				      							<div class="col-md-2">
+				      								<strong>Status:</strong>
+				      							</div>
+				      							<div class="col-md-2">
+				      								{{$fwreq.Status}}
+				      							</div>
+				      						</div>
+				      						<div class="row">
+				      							<div class="col-md-2">
+				      								<strong>Service Number:</strong>
+				      							</div>
+				      							<div class="col-md-2">
+				      								{{$fwreq.Service_Number}}
+				      							</div>
+				      						</div>
+				      					</div>
+				      				</div>
+				      			</div>
+				      			<div class="col-md-3">
+				      				<img src="/static/images/qrcodes/{{$fwreq.Id}}.png" style="margin-top: -15px">
+				      			</div>
+				      		</div>
+				      		<!-- row -->
+				      		<div class="row">
+				      			<div class="col-md-11">
+				      				<hr/>
+				      			</div>
+				      		</div>
+				      		<!-- row -->
+				      		<div class="row">
+					      		<div class="col-md-11">
+					      			<pre style="white-space: pre-line;">
+					      				{{$fwreq.Firewall_Rules.ToJson}}
+					      			</pre>	
+					      		</div>
+				      		</div>
+				      		<!-- row -->
+				      		<div class="row">
+					      		<div class="col-md-11">
+					      			<div class="btn-group">
+						      			<button type="button" class="btn btn-success">
+						      				<a class="glyphicon glyphicon-ok-circle" href="/approve/{{$fwreq.Id}}/secReviewPending" style="color:#FFFFFF;text-decoration:none;"> Approve</a>
+						      			</button>
+						      			<button type="button" class="btn btn-danger">
+						      				<a class="glyphicon glyphicon-remove-circle" href="/approve/{{$fwreq.Id}}/secReviewPending" style="color:#FFFFFF;text-decoration:none;"> Deny</a>
+						      			</button>
+						      			<button type="button" class="btn btn-warning">
+						      				<a class="glyphicon glyphicon-pencil" href="/approve/{{$fwreq.Id}}/secReviewPending" style="color:#FFFFFF;text-decoration:none;"> Modify</a>
+						      			</button>
+					      			</div>
+					      		</div>
+				      		</div>
+				      		<!-- row -->
+				      	</div><!-- container -->
+				      </div>
+				    </div>
+				  </div>
+				{{end}}
+				</div>
+			</div>
+		</div>
+		<!-- row -->
+	</div><!-- container -->
+{{end}}
