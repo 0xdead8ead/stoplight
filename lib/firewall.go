@@ -2,6 +2,7 @@ package firewall
 
 import (
 	//"fmt"
+	"encoding/hex"
 	"encoding/json"
 	"labix.org/v2/mgo"
 	"log"
@@ -179,6 +180,29 @@ func SaveFirewall(fwreq map[string]interface{}) string {
 	return string(fwreqIDObject.Hex())
 }
 
+//Saves Firewall Request to MongoDB
+func UpdateFirewallStatus(id string, statusUpdate string) {
+	//var pass string
+	log.Printf("Updating status to:\t%s for firewall:\t%s\n\n", statusUpdate, id)
+	// TODO - Append Status Variable to fwreq with Current Queue
+	session, err := mgo.Dial("localhost")
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+	requestCollection := session.DB("firewallapp").C("fwreq")
+	hexId, hexErr := hex.DecodeString(id)
+	if hexErr != nil {
+		log.Printf("\n\nERROR:\t%s\n\n", hexErr)
+	}
+	updateId := bson.M{"_id": bson.ObjectId(hexId)}
+	update := bson.M{"$set": bson.M{"status": statusUpdate}}
+	updateErr := requestCollection.Update(updateId, update)
+	if updateErr != nil {
+		log.Printf("Can't update document %v\n", updateErr)
+	}
+}
+
 // Get Firewall Status by ID
 func GetFirewallStatusByID(id string) *Firewall_Request {
 	log.Printf("Retreiving Firewall Request by ID:\t%s", id)
@@ -214,9 +238,9 @@ func GetFirewallRequestByQueue(queueName string) *Approval_Queue {
 	if err != nil {
 		log.Println(err)
 	}
-	log.Println(result)
+	log.Printf("\n\nFUCKING SHITSTICKS%s\n\n", result)
 
-	var queueList []Firewall_Request
+	var queueList Firewall_Requests
 	for i := range result {
 		firewallRequest := FirewallMapToStruct(result[i])
 		queueList = append(queueList, *firewallRequest)

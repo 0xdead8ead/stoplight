@@ -18,6 +18,12 @@ type status_page struct {
 	FirewallJSON string
 }
 
+type approve_page struct {
+	NeworkValidationQueue *firewall.Approval_Queue
+	SecurityReviewQueue   *firewall.Approval_Queue
+	ImplementationQueue   *firewall.Approval_Queue
+}
+
 //Index handler
 func Index(w http.ResponseWriter, r *http.Request) {
 	var pass string
@@ -96,17 +102,18 @@ func StatusById(w http.ResponseWriter, r *http.Request) {
 }
 
 //Approval Handler
-func Approve(w http.ResponseWriter, r *http.Request) {
+func ApprovePage(w http.ResponseWriter, r *http.Request) {
 	//var pass string
 
+	approvalQueues := new(approve_page)
+
 	//TODO - Call Firewall Search for Matching Queues
-	netPendingQueue := firewall.GetFirewallRequestByQueue("networkPending")
-	//log.Println(requests)
-	//for request := range requests {
-	//	requestMap := request.(bson.M)
-	//	requestMap["_id"] = requestMap["_id"].(bson.ObjectId).Hex()
-	//}
-	//fwreqJson := firewall.FirewallStructToJson(netPendingQueue.Firewall_Requests[0])
+	approvalQueues.NeworkValidationQueue = firewall.GetFirewallRequestByQueue("networkPending")
+	approvalQueues.SecurityReviewQueue = firewall.GetFirewallRequestByQueue("secReviewPending")
+	approvalQueues.ImplementationQueue = firewall.GetFirewallRequestByQueue("implementationPending")
+
+	netPendingQueue := approvalQueues.NeworkValidationQueue
+
 	fwreqJson := netPendingQueue.Firewall_Queue.ToJson()
 	//log.Printf("Firewall Req JSON:\n\n%s", fwreqJson)
 	log.Printf("Firewall ToJson:\n\n%s", fwreqJson)
@@ -114,7 +121,17 @@ func Approve(w http.ResponseWriter, r *http.Request) {
 	var approveTemplate = template.Must(template.New("approve").ParseFiles("templates/base.html", "templates/approve.html"))
 
 	//approveTemplate = approveTemplate.Funcs(functionMap)
-	approveTemplate.ExecuteTemplate(w, "base", netPendingQueue)
+	approveTemplate.ExecuteTemplate(w, "base", approvalQueues)
+}
+
+func ApproveRequest(w http.ResponseWriter, r *http.Request) {
+	//var pass string
+	vars := mux.Vars(r)
+	fwRequestId := vars["fwRequestId"]
+	queueApprovedTo := vars["queueName"]
+	if bson.IsObjectIdHex(fwRequestId) {
+		firewall.UpdateFirewallStatus(fwRequestId, queueApprovedTo)
+	}
 }
 
 //Blog Handler
