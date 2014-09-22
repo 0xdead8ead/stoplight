@@ -9,7 +9,7 @@ Stoplight - Firewall Workflow in Go
 
 ---------
 
-![Alt text](http://https://github.com/f47h3r/stoplight/raw/master/release/images/firewall_request_status.png "Re-imagined Firewall Request App")
+![Alt text](https://github.com/f47h3r/stoplight/raw/master/release/images/firewall_request_status.png "Re-imagined Firewall Request App")
 
 ---------
 
