@@ -78,6 +78,7 @@ func Status(w http.ResponseWriter, r *http.Request) {
 	statusTemplate.ExecuteTemplate(w, "base", pass)
 }
 
+//Status/{mongoId} Handler
 func StatusById(w http.ResponseWriter, r *http.Request) {
 	//var pass string
 	vars := mux.Vars(r)
@@ -85,6 +86,10 @@ func StatusById(w http.ResponseWriter, r *http.Request) {
 
 	if bson.IsObjectIdHex(fwRequestId) {
 		firewallReq := firewall.GetFirewallStatusByID(fwRequestId)
+
+		// DELETE ME - TESTING SEND MAIL
+		firewall.SendStatusUpdateEmail(firewallReq)
+
 		//Serialize to JSON
 		jsonFirewallReq, err := json.MarshalIndent(firewallReq, "", "    ")
 		if err != nil {
@@ -107,7 +112,7 @@ func StatusById(w http.ResponseWriter, r *http.Request) {
 
 //Approval Handler
 func ApprovePage(w http.ResponseWriter, r *http.Request) {
-	//var pass string
+	//Need Function Comment or Example
 
 	approvalQueues := new(approve_page)
 
@@ -116,18 +121,11 @@ func ApprovePage(w http.ResponseWriter, r *http.Request) {
 	approvalQueues.SecurityReviewQueue = firewall.GetFirewallRequestByQueue("secReviewPending")
 	approvalQueues.ImplementationQueue = firewall.GetFirewallRequestByQueue("implementationPending")
 
-	netPendingQueue := approvalQueues.NeworkValidationQueue
-
-	fwreqJson := netPendingQueue.Firewall_Queue.ToJson()
-	//log.Printf("Firewall Req JSON:\n\n%s", fwreqJson)
-	log.Printf("Firewall ToJson:\n\n%s", fwreqJson)
-
 	var approveTemplate = template.Must(template.New("approve").ParseFiles("templates/base.html", "templates/approve.html"))
-
-	//approveTemplate = approveTemplate.Funcs(functionMap)
 	approveTemplate.ExecuteTemplate(w, "base", approvalQueues)
 }
 
+//Approve Request
 func ApproveRequest(w http.ResponseWriter, r *http.Request) {
 	//var pass string
 	vars := mux.Vars(r)
@@ -139,24 +137,16 @@ func ApproveRequest(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/approve", 302)
 }
 
-//Approval Handler
+//Audit Handler
 func Audit(w http.ResponseWriter, r *http.Request) {
-	//var pass string
-
 	auditQueue := new(audit_page)
 
-	//TODO - Call Firewall Search for Matching Queues
+	// Call Firewall Search for Matching Queues
 	auditQueue.AuditLog = firewall.GetFirewallRequestByQueue("implementationCompleted")
-
-	//netPendingQueue := approvalQueues.NeworkValidationQueue
-
-	//fwreqJson := netPendingQueue.Firewall_Queue.ToJson()
 	//log.Printf("Firewall Req JSON:\n\n%s", fwreqJson)
 	//log.Printf("Firewall ToJson:\n\n%s", fwreqJson)
 
 	var auditTemplate = template.Must(template.New("approve").ParseFiles("templates/base.html", "templates/audit.html"))
-
-	//approveTemplate = approveTemplate.Funcs(functionMap)
 	auditTemplate.ExecuteTemplate(w, "base", auditQueue)
 }
 

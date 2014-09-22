@@ -1,7 +1,6 @@
 package firewall
 
 import (
-	//"fmt"
 	"encoding/hex"
 	"encoding/json"
 	"labix.org/v2/mgo"
@@ -9,8 +8,10 @@ import (
 	"strings"
 	//"reflect"
 	"code.google.com/p/rsc/qr"
+	"fmt"
 	"io/ioutil"
 	"labix.org/v2/mgo/bson"
+	"net/smtp"
 	//"regexp"
 )
 
@@ -124,7 +125,7 @@ func (fwRule Firewall_Rules) ToJson() string {
 	return string(jsonRule)
 }
 
-/*
+/* DELETE - No longer neaded, just ther as a refrence.
 func (fwRule []Firewall_Rule) ToJson() string {
 	jsonRule, err := json.MarshalIndent(fwRule, "", "    ")
 	if err != nil {
@@ -160,7 +161,7 @@ func SaveFirewall(fwreq map[string]interface{}) string {
 	// TODO - Append Status Variable to fwreq with Current Queue
 	session, err := mgo.Dial("localhost")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	defer session.Close()
 
@@ -168,7 +169,7 @@ func SaveFirewall(fwreq map[string]interface{}) string {
 	//err = requestCollection.Insert(fwreq)
 	info, inserterr := requestCollection.Upsert(fwreq, fwreq)
 	if inserterr != nil {
-		panic(inserterr)
+		log.Println(inserterr)
 	}
 	fwreqIDObject := info.UpsertedId.(bson.ObjectId)
 	log.Printf("%s", fwreqIDObject.Hex())
@@ -187,7 +188,7 @@ func UpdateFirewallStatus(id string, statusUpdate string) {
 	// TODO - Append Status Variable to fwreq with Current Queue
 	session, err := mgo.Dial("localhost")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	defer session.Close()
 	requestCollection := session.DB("firewallapp").C("fwreq")
@@ -208,14 +209,14 @@ func GetFirewallStatusByID(id string) *Firewall_Request {
 	log.Printf("Retreiving Firewall Request by ID:\t%s", id)
 	session, err := mgo.Dial("localhost")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	defer session.Close()
 	requestCollection := session.DB("firewallapp").C("fwreq")
 	var result interface{}
 	err = requestCollection.FindId(bson.ObjectIdHex(id)).One(&result)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	firewallRequest := FirewallMapToStruct(result)
 	//log.Printf("\n\n%s\n\n", result)
@@ -253,4 +254,62 @@ func GetFirewallRequestByQueue(queueName string) *Approval_Queue {
 	log.Printf("Firewall Queue:\t%s", firewallQueue)
 
 	return firewallQueue
+}
+
+func SendStatusUpdateEmail(fwreq *Firewall_Request) {
+	// TODO - Figure out how to attach a PDF of the Firewall Request.
+	// TLS Encryption for Message Send (https://gist.github.com/chrisgillis/10888032)
+
+	// Setup headers
+	headers := make(map[string]string)
+	headers["From"] = "noreply-firewallbot@gap.com"
+	headers["To"] = "chase_schultz@gap.com"
+	headers["Subject"] = "Firewall Status Update"
+
+	body := "Hello " + fwreq.Requestor + ",\n\n I'm firewall Bot, here's your Firewall Status:\n\n" + fwreq.ToJson()
+
+	// Setup message
+	message := ""
+	for k, v := range headers {
+		message += fmt.Sprintf("%s: %s\r\n", k, v)
+	}
+	message += "\r\n" + body
+
+	c, err := smtp.Dial("mail.gap.com:25")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Auth
+	//if err = c.Auth(auth); err != nil {
+	//    log.Println(err)
+	//}
+
+	// To && From
+	if err = c.Mail("firewallbot@gap.com"); err != nil {
+		log.Println(err)
+	}
+
+	if err = c.Rcpt("chase_schultz@gap.com"); err != nil {
+		log.Println(err)
+	}
+
+	// Data
+	w, err := c.Data()
+	if err != nil {
+		log.Println(err)
+	}
+
+	_, err = w.Write([]byte(message))
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = w.Close()
+	if err != nil {
+		log.Println(err)
+	}
+
+	c.Quit()
+
 }
